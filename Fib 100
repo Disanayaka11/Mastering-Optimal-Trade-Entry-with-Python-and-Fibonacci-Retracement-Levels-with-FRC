@@ -1,0 +1,51 @@
+# ෆිබනාචි රීට්‍රේස්මන්ට් ප්‍රතිශත
+fib_levels = [0.236, 0.382, 0.5, 0.618, 0.786]
+
+def fibonacci_retracement(data, trend='uptrend'):
+    max_price = data['High'].max()
+    min_price = data['Low'].min()
+    
+    if trend == 'uptrend':
+        levels = [(max_price - (max_price - min_price) * level) for level in fib_levels]
+    else:
+        levels = [(min_price + (max_price - min_price) * level) for level in fib_levels]
+        
+    return levels
+
+def fibonacci_extension(data, trend='uptrend'):
+    max_price = data['High'].max()
+    min_price = data['Low'].min()
+    diff = max_price - min_price
+    
+    if trend == 'uptrend':
+        extension_levels = [max_price + diff * level for level in fib_levels]
+    else:
+        extension_levels = [min_price - diff * level for level in fib_levels]
+        
+    return extension_levels
+
+# Candlestick Chart සහ ෆිබනාචි ස්ථර ඇදීම
+def plot_chart_with_fibonacci(data, trend='uptrend'):
+    plt.figure(figsize=(14,7))
+    plt.plot(data['Close'], label='Close Price')
+    
+    # Plot Fibonacci retracement levels
+    retracement_levels = fibonacci_retracement(data, trend)
+    for level in retracement_levels:
+        plt.axhline(level, linestyle='--', alpha=0.5, color='r')
+        plt.text(len(data)-1, level, f'{level:.2f}', va='center', ha='left', color='r')
+    
+    # Plot Fibonacci extension levels
+    extension_levels = fibonacci_extension(data, trend)
+    for level in extension_levels:
+        plt.axhline(level, linestyle='--', alpha=0.5, color='g')
+        plt.text(len(data)-1, level, f'{level:.2f}', va='center', ha='left', color='g')
+
+    plt.title('Price Chart with Fibonacci Levels')
+    plt.legend()
+    plt.show()
+
+# Data loading and processing
+data = pd.read_csv('your_data.csv')  # Replace with your data source
+plot_chart_with_fibonacci(data, trend='uptrend')
+```
